@@ -10,7 +10,7 @@ const ai = new GoogleGenAI({
   apiKey:process.env.GEMINI_API_KEY
 })
 
-type Message = { //type of Message
+export type Message = { //type of Message
   role: string;
   message: string;
 }

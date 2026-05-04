@@ -4,7 +4,6 @@ import type {Request, Response} from 'express'
 import dotenv from 'dotenv'
 import router from './routes/route.ts';
 
-
 dotenv.config()
 const app = express();
 const PORT = process.env.PORT || 5001;
