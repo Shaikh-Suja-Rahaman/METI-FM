@@ -1,1 +1,751 @@
-@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo+Black&display=swap");
+
+/* ─── Design Tokens ─────────────────────────────── */
+:root {
+  --ink:        #0f0f0f;
+  --bg:         #f0ebe0;
+  --card:       #fafaf7;
+  --card-alt:   #ffffff;
+  --border:     2.5px solid #0f0f0f;
+  --radius-sm:  10px;
+  --radius-md:  14px;
+  --radius-lg:  18px;
+  --shadow:     5px 5px 0 #0f0f0f;
+  --shadow-sm:  3px 3px 0 #0f0f0f;
+  --shadow-xs:  2px 2px 0 #0f0f0f;
+
+  /* Accent palette */
+  --a-coral:    #ff6b52;
+  --a-mint:     #5cffc9;
+  --a-yellow:   #ffd060;
+  --a-sky:      #5bc8ff;
+  --a-lilac:    #c9a7ff;
+  --a-pink:     #ff90b3;
+
+  /* Per-persona accents */
+  --persona-chillFriend:    var(--a-sky);
+  --persona-harshCoach:     var(--a-coral);
+  --persona-gentleListener: var(--a-mint);
+}
+
+/* ─── Reset / Base ───────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden; /* prevent page-level scroll */
+}
+
+body {
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+button, select, input {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Remove all focus outlines — replace with custom */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2.5px solid var(--a-yellow);
+  outline-offset: 2px;
+}
+
+/* ─── App Shell ──────────────────────────────────── */
+.neo-shell {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 270px 1fr;
+  gap: 18px;
+  padding: 18px;
+  overflow: hidden;
+}
+
+@media (max-width: 860px) {
+  .neo-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+}
+
+/* ─── Sidebar ────────────────────────────────────── */
+.neo-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  /* no overflow:hidden — lets child shadows breathe */
+}
+
+/* ─── Cards ──────────────────────────────────────── */
+.neo-card {
+  background: var(--card);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  /* overflow: hidden removed — was clipping child hover shadows */
+}
+
+/* Brand panel */
+.neo-panel {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.neo-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.neo-title {
+  font-family: "Archivo Black", "Space Grotesk", sans-serif;
+  font-size: 22px;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.neo-subtitle {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 600;
+  color: #555;
+}
+
+.neo-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: #444;
+}
+
+/* ─── Custom Persona Dropdown ────────────────────── */
+.neo-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.neo-dropdown-trigger {
+  width: 100%;
+  background: var(--card-alt);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  text-align: left;
+}
+
+.neo-dropdown-trigger:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow);
+}
+
+.neo-dropdown-trigger:active {
+  transform: translate(1px, 1px);
+  box-shadow: none;
+}
+
+.neo-dropdown-trigger.open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: none;
+  transform: none;
+}
+
+.neo-dropdown-arrow {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.neo-dropdown-trigger.open .neo-dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.neo-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--card-alt);
+  border: var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  box-shadow: var(--shadow);
+  z-index: 100;
+  overflow: hidden;
+  animation: dropIn 0.15s ease;
+}
+
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.neo-dropdown-option {
+  width: 100%;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  border-top: 2px solid #0f0f0f;
+  transition: background 0.1s ease;
+  text-align: left;
+}
+
+.neo-dropdown-option:first-child {
+  border-top: none;
+}
+
+.neo-dropdown-option:hover {
+  background: var(--a-yellow);
+}
+
+.neo-dropdown-option.selected {
+  background: var(--a-yellow);
+}
+
+.neo-dropdown-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  flex-shrink: 0;
+}
+
+/* ─── New Chat Button ────────────────────────────── */
+.neo-btn {
+  width: 100%;
+  background: var(--a-yellow);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 14px;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: var(--shadow);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  letter-spacing: 0.01em;
+}
+
+.neo-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.neo-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+/* ─── History Panel ──────────────────────────────── */
+.neo-history {
+  padding: 16px;
+  /* Extra side padding so item hover shadows aren't clipped */
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+  overflow: visible; /* let shadows breathe */
+}
+
+.neo-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #444;
+  flex-shrink: 0;
+}
+
+.neo-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  overflow-x: visible;
+  flex: 1;
+  min-height: 0;
+  /* Extra padding so hover box-shadows aren't clipped by scroll container */
+  padding: 4px 6px 4px 4px;
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #c8c0b0 transparent;
+}
+
+.neo-history-list::-webkit-scrollbar {
+  width: 4px;
+}
+.neo-history-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.neo-history-list::-webkit-scrollbar-thumb {
+  background: #c8c0b0;
+  border-radius: 4px;
+}
+
+/* History item */
+.neo-history-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  background: var(--card-alt);
+  border: var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  box-shadow: var(--shadow-xs);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+  flex-shrink: 0;
+}
+
+.neo-history-item:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.neo-history-item:active {
+  transform: translate(1px, 1px);
+  box-shadow: none;
+}
+
+.neo-history-item.active {
+  background: var(--a-yellow);
+}
+
+.neo-history-title {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+/* ─── Pills ──────────────────────────────────────── */
+.neo-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  font-size: 10px;
+  font-weight: 700;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+}
+
+.neo-pill--chillFriend    { background: var(--a-sky); }
+.neo-pill--harshCoach     { background: var(--a-coral); }
+.neo-pill--gentleListener { background: var(--a-mint); }
+
+/* ─── Empty (no history) ─────────────────────────── */
+.neo-empty {
+  font-size: 13px;
+  opacity: 0.55;
+  font-style: italic;
+}
+
+/* ─── Main area ──────────────────────────────────── */
+.neo-main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: visible; /* neo-chat handles its own scroll */
+}
+
+/* ─── Chat window ────────────────────────────────── */
+.neo-chat {
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;  /* clips children to rounded corners */
+  height: 100%;
+}
+
+/* Chat header */
+.neo-chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: var(--border);
+  flex-shrink: 0;
+}
+
+.neo-chat-header--chillFriend    { background: var(--a-sky); }
+.neo-chat-header--harshCoach     { background: var(--a-coral); }
+.neo-chat-header--gentleListener { background: var(--a-mint); }
+
+.neo-chat-title {
+  font-family: "Archivo Black", sans-serif;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+}
+
+/* Chat body — scrollable */
+.neo-chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #f7f3ea;
+  scrollbar-width: thin;
+  scrollbar-color: #c8c0b0 transparent;
+}
+
+.neo-chat-body::-webkit-scrollbar {
+  width: 4px;
+}
+.neo-chat-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.neo-chat-body::-webkit-scrollbar-thumb {
+  background: #c8c0b0;
+  border-radius: 4px;
+}
+
+/* Chat footer */
+.neo-chat-footer {
+  padding: 12px 16px;
+  border-top: var(--border);
+  background: var(--card-alt);
+  flex-shrink: 0;
+}
+
+.neo-input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.neo-input {
+  flex: 1;
+  background: var(--bg);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-weight: 500;
+  font-size: 14px;
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow 0.1s ease;
+}
+
+.neo-input:focus {
+  outline: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.neo-send {
+  background: var(--a-coral);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  flex-shrink: 0;
+}
+
+.neo-send:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow);
+}
+
+.neo-send:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+/* ─── Chat Bubbles ───────────────────────────────── */
+.bubble-row {
+  display: flex;
+  margin-bottom: 6px;
+}
+
+.bubble-row--user {
+  justify-content: flex-end;
+}
+
+.bubble-row--assistant {
+  justify-content: flex-start;
+}
+
+.bubble {
+  max-width: 70%;
+  border: var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  box-shadow: var(--shadow-xs);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.55;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.bubble-user {
+  background: var(--a-mint);
+  border-bottom-right-radius: 4px;
+}
+
+.bubble-assistant {
+  background: var(--card-alt);
+  border-bottom-left-radius: 4px;
+}
+
+/* ─── Empty State (no chat selected) ─────────────── */
+.neo-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  gap: 24px;
+  background: var(--card);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  padding: 40px;
+}
+
+.neo-empty-icon {
+  width: 88px;
+  height: 88px;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--a-yellow);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+}
+
+.neo-empty-heading {
+  font-family: "Archivo Black", sans-serif;
+  font-size: 28px;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.neo-empty-sub {
+  font-size: 15px;
+  color: #555;
+  font-weight: 500;
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+.neo-empty-hint {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.neo-empty-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card-alt);
+  border: var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  box-shadow: var(--shadow-xs);
+  font-size: 13px;
+  font-weight: 600;
+  width: 280px;
+}
+
+.neo-empty-step-num {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--a-sky);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ─── History item delete button ─────────────────── */
+.neo-history-item-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.neo-delete-btn {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.1s ease, border-color 0.1s ease;
+}
+
+.neo-history-item:hover .neo-delete-btn {
+  opacity: 1;
+}
+
+.neo-delete-btn:hover {
+  background: var(--a-coral);
+  border-color: var(--ink);
+}
+
+/* ─── Confirm Modal ──────────────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 15, 15, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-box {
+  background: var(--card-alt);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 8px 8px 0 #0f0f0f;
+  padding: 32px 28px;
+  max-width: 360px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  animation: slideUp 0.18s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal-icon {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.modal-title {
+  font-family: "Archivo Black", sans-serif;
+  font-size: 20px;
+  color: var(--ink);
+}
+
+.modal-message {
+  font-size: 14px;
+  font-weight: 500;
+  color: #444;
+  line-height: 1.6;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  width: 100%;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  border: var(--border);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.modal-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow);
+}
+
+.modal-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.modal-btn--cancel {
+  background: var(--card);
+}
+
+.modal-btn--confirm {
+  background: var(--a-coral);
+}

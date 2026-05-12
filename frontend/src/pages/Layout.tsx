@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import FullChat from '../components/FullChat'
 import { Persona } from '../PersonaType'
 import HistoryBar from '../components/HistoryBar';
+import PersonaSelect from '../components/PersonaSelect';
 
 export type Message = {
   role: string;
@@ -9,141 +10,147 @@ export type Message = {
 };
 
 export type Conversation = {
-  id: string;           // unique id, e.g. timestamp
-  persona: string;      // "chillFriend" | "harshCoach" | "gentleListener"
-  title: string;        // first message preview, e.g. "Hey how are you..."
-  createdAt: number;    // Date.now()
+  id: string;
+  persona: string;
+  title: string;
+  createdAt: number;
   messages: Message[];
 };
 
-const Layout = () => {
-
-
-  const [selectedPersona, setSelectedPersona] = useState<string>(Persona.chillFriend);
-
-
-const [conversations, setConversations] = useState<Conversation[]>(() => {
-  try {
-    return JSON.parse(localStorage.getItem("conversations") || "[]");
-  } catch {
-    localStorage.removeItem("conversations"); // wipe the corrupted data
-    return [];
-  }
-});
-
-  useEffect(()=>{
-    localStorage.setItem("conversations", JSON.stringify(conversations));
-  }, [conversations])
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
-
-  const createNewChat = () =>{
-
-    const newConvo: Conversation = {
-      id: Date.now().toString(),
-      persona:selectedPersona,
-      title:"New Conversation",
-      createdAt:Date.now(),
-      messages: [] //intially it would be emoty
-    }
-
-    setConversations((prev) => [...prev, newConvo]);
-    setActiveConversationId(newConvo.id);
-
-  }
-
-  const activeConversation = conversations.find(c => c.id == activeConversationId);
-
-  const currentMessages = activeConversation?.messages || [];
-
-  // const [chatHistories, setChatHistories] = useState<Record<string, Message[]>>({});
-
-  // const [chillFriendMessages, setChillFriendMessaages] = useState<Message[]>([]);
-  // const [harshCoachMessages, setHarshCoachMessages] = useState<Message[]>([]);
-  // const [gentleListenerMessages, setGentleListenerMessages] = useState<Message[]>([]);
-
-  // const gettersAndSettersForMessages = ():[Message[], React.Dispatch<React.SetStateAction<Message[]>>]  =>{
-  //   if(tab == Persona.chillFriend){
-  //     return [chillFriendMessages, setChillFriendMessaages];
-  //   } else if(tab == Persona.harshCoach){
-  //     return [harshCoachMessages, setHarshCoachMessages];
-  //   } else {
-  //     return [gentleListenerMessages, setGentleListenerMessages];
-  //   }
-  // }
-
-  // const [currentMessages, setCurrentMessages] = gettersAndSettersForMessages();
-
-
-  const setCurrentMessages = (updater:Message[] | ((prev: Message[]) => Message[])) => {
-  setConversations(prev => prev.map(convo =>
-    convo.id === activeConversationId
-      ? { ...convo, messages: typeof updater === 'function' ? updater(convo.messages) : updater }
-      : convo
-  ));
+/** Derive a friendly title from the first user message */
+const deriveTitle = (messages: Message[]): string => {
+  const firstUser = messages.find(m => m.role === 'user');
+  if (!firstUser) return 'New Conversation';
+  const text = firstUser.message.trim();
+  return text.length > 38 ? text.slice(0, 36) + '…' : text;
 };
 
+const Layout = () => {
+  const [selectedPersona, setSelectedPersona] = useState<string>(Persona.chillFriend);
 
+  const [conversations, setConversations] = useState<Conversation[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem("conversations") || "[]");
+    } catch {
+      localStorage.removeItem("conversations");
+      return [];
+    }
+  });
 
+  useEffect(() => {
+    localStorage.setItem("conversations", JSON.stringify(conversations));
+  }, [conversations]);
+
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+
+  const createNewChat = () => {
+    const newConvo: Conversation = {
+      id: Date.now().toString(),
+      persona: selectedPersona,
+      title: "New Conversation",
+      createdAt: Date.now(),
+      messages: [],
+    };
+    setConversations((prev) => [...prev, newConvo]);
+    setActiveConversationId(newConvo.id);
+  };
+
+  const deleteConversation = (id: string) => {
+    setConversations(prev => prev.filter(c => c.id !== id));
+    // If the deleted chat was active, deselect
+    if (activeConversationId === id) {
+      setActiveConversationId(null);
+    }
+  };
+
+  const activeConversation = conversations.find(c => c.id === activeConversationId);
+  const currentMessages = activeConversation?.messages || [];
+
+  const setCurrentMessages = (updater: Message[] | ((prev: Message[]) => Message[])) => {
+    setConversations(prev => prev.map(convo => {
+      if (convo.id !== activeConversationId) return convo;
+      const newMessages = typeof updater === 'function' ? updater(convo.messages) : updater;
+      // Auto-update the title once the first user message arrives
+      const newTitle = convo.title === 'New Conversation' ? deriveTitle(newMessages) : convo.title;
+      return { ...convo, messages: newMessages, title: newTitle };
+    }));
+  };
 
   return (
-    <div className='flex h-screen'>
-    <div className='w-64 flex flex-col border-r p-4'>
+    <div className="neo-shell">
+      {/* ── Sidebar ── */}
+      <aside className="neo-sidebar">
+        {/* Brand + controls */}
+        <div className="neo-card neo-panel">
+          <div className="neo-brand">
+            <div className="neo-title">Mood Space</div>
+            <div className="neo-subtitle">Your neobrutalist vibe lab</div>
+          </div>
 
-      <select
-        value={selectedPersona}
-        onChange={(e)=> setSelectedPersona(e.target.value)}
-        className='border rounded p-2'
-      >
-        <option value={Persona.chillFriend}>Chill Friend</option>
-        <option value={Persona.gentleListener}> Gentle Listener</option>
-        <option value={Persona.harshCoach}>Harsh Coach</option>
+          <label className="neo-label" htmlFor="persona-select">Persona</label>
+          <PersonaSelect
+            value={selectedPersona}
+            onChange={setSelectedPersona}
+          />
 
-      </select>
+          <button onClick={createNewChat} className="neo-btn">
+            + New Chat
+          </button>
+        </div>
 
-      <button onClick={createNewChat} className='mb-4 bg-blue-500 text-white p-2 rounded'>
-        + New Chat
-      </button>
-      <HistoryBar
-        conversations={conversations}
-        setActiveConversationId={setActiveConversationId}
-      />
+        {/* History */}
+        <div className="neo-card neo-history">
+          <div className="neo-section-title">History</div>
+          <HistoryBar
+            conversations={conversations}
+            activeConversationId={activeConversationId}
+            setActiveConversationId={setActiveConversationId}
+            onDelete={deleteConversation}
+          />
+        </div>
+      </aside>
+
+      {/* ── Main ── */}
+      <main className="neo-main">
+        {activeConversationId && activeConversation
+          ? (
+            <FullChat
+              persona={activeConversation.persona}
+              messages={currentMessages}
+              setMessages={setCurrentMessages}
+            />
+          )
+          : (
+            <div className="neo-empty-state">
+              <div className="neo-empty-icon">💬</div>
+
+              <div>
+                <div className="neo-empty-heading">Start a new vibe</div>
+                <div className="neo-empty-sub" style={{ marginTop: 8 }}>
+                  Pick a persona, hit <strong>+ New Chat</strong>, and let the conversation flow.
+                </div>
+              </div>
+
+              <div className="neo-empty-hint">
+                <div className="neo-empty-step">
+                  <div className="neo-empty-step-num">1</div>
+                  Choose a persona from the sidebar
+                </div>
+                <div className="neo-empty-step">
+                  <div className="neo-empty-step-num" style={{ background: 'var(--a-mint)' }}>2</div>
+                  Hit <strong style={{ marginLeft: 4 }}>+ New Chat</strong> to begin
+                </div>
+                <div className="neo-empty-step">
+                  <div className="neo-empty-step-num" style={{ background: 'var(--a-coral)', color: '#fff' }}>3</div>
+                  Type your first message ✌️
+                </div>
+              </div>
+            </div>
+          )
+        }
+      </main>
     </div>
-    <div className='flex flex-col h-screen items-center justify-center'>
+  );
+};
 
-
-
-      {/* <div className='flex gap-4 mb-4'>
-
-        <h1
-          style={{ backgroundColor: tab === Persona.chillFriend ? "lightblue" : "grey", cursor: "pointer", padding: "8px", borderRadius: "8px", color:"white" }}
-          onClick={() => handleSetTab(Persona.chillFriend)}
-        >
-          Chill Friend
-        </h1>
-        <h1
-          style={{ backgroundColor: tab === Persona.harshCoach ? "lightblue" : "grey", cursor: "pointer", padding: "8px", borderRadius: "8px", color:"white" }}
-          onClick={() => handleSetTab(Persona.harshCoach)}
-        >
-          Harsh Coach
-        </h1>
-        <h1
-          style={{ backgroundColor: tab === Persona.gentleListener ? "lightblue" : "grey", cursor: "pointer", padding: "8px", borderRadius: "8px", color:"white" }}
-          onClick={() => handleSetTab(Persona.gentleListener)}
-        >
-          Gentle Listener
-        </h1>
-      </div> */}
-
-      {activeConversationId && activeConversation
-        ? <FullChat persona={activeConversation.persona} messages={currentMessages} setMessages={setCurrentMessages} />
-        : <p className='text-gray-400'>Create a new chat to get started</p>
-      }
-
-      {/* <FullChat persona={tab} messages={currentMessages} setMessages={setCurrentMessages}/> */}
-
-    </div>
-    </div>
-  )
-}
-
-export default Layout
+export default Layout;

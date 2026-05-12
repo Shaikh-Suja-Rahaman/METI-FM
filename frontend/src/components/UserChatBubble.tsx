@@ -1,16 +1,15 @@
 import React from 'react'
 
-
-type UserChatBubble = {
-  text:string
+type UserChatBubbleProps = {
+  text: string
 }
 
-const UserChatBubble = ({text} : UserChatBubble) => {
+const UserChatBubble = ({ text }: UserChatBubbleProps) => {
   return (
-    <div className='my-2 flex justify-end'>
-    <div className='bg-emerald-100 px-4 py-2 rounded-2xl max-w-[66%] w-fit break-words'>
-      {text}
-    </div>
+    <div className="bubble-row bubble-row--user">
+      <div className="bubble bubble-user">
+        {text}
+      </div>
     </div>
   )
 }
