@@ -6,6 +6,8 @@ import axios from "axios";
 
 type FullCharProps = {
   persona: string;
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
 };
 
 type Message = {
@@ -14,56 +16,39 @@ type Message = {
   message: string;
 };
 
-const FullChat = ({ persona }: FullCharProps) => {
-  let [messages, setMessages] = useState<Message[]>([]);
+const FullChat = ({ persona, messages, setMessages }: FullCharProps) => {
   const [text, setText] = useState("");
 
   const sendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // console.log(text);
-    // setMessages((prev) => [...prev, text]);
-    // setMessages((prev) => [
-    //   ...prev,
-    //   {
-    //     role: "user",
-    //     message: text,
-    //   },
-    // ]);
+    setText("");
 
-    // let payload = {
-    //   contents: messages,
-    // };
     const userMessage = {
-  role: "user",
-  message: text,
-};
+      role: "user",
+      message: text,
+    };
 
-setMessages((prev) => [
-  ...prev,
-  userMessage,
-]);
+    setMessages((prev) => [...(prev || []), userMessage]);
 
-const payload = {
-  contents: [...messages, userMessage],
-};
+    const payload = {
+      contents: [...(messages || []), userMessage],
+    };
 
     let response = await axios.post(
-      "http://localhost:5001/api/chat/chillFriend",
+      `http://localhost:5001/api/chat/${persona}`,
       payload,
     );
 
     setMessages((prev) => [
-      ...prev,
+      ...(prev || []),
       {
         role: "assistant",
-        message: response.data.message,
+        message: response.data,
       },
     ]);
 
-
     // console.log(messages);
 
-    setText("");
   };
 
   useEffect(() => {
@@ -78,11 +63,11 @@ const payload = {
         <UserChatBubble text="Hey, I’m trying to build a chat UI in React." />
 
         <AssistantChatBubble text="Nice, that’s a great project. Are you working with Tailwind?" /> */}
-        {messages.map((msg, index) => {
+        {messages && messages.map((msg, index) => {
           if (msg.role == "user") {
             return <UserChatBubble key={index} text={msg.message} />;
-          } else if(msg.role == "assistant")  {
-            return <AssistantChatBubble key={index} text={msg.message}/>;
+          } else if (msg.role == "assistant") {
+            return <AssistantChatBubble key={index} text={msg.message} />;
           }
         })}
       </div>

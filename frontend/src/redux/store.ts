@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit"
 
-
-
 export const store = configureStore({
-  reducer: {},
+  // Adding a dummy reducer to silense the "Store does not have a valid reducer" error
+  reducer: {
+    app: (state = {}) => state
+  },
 })
 
 export type RootState = ReturnType<typeof store.getState>
