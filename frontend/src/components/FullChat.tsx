@@ -58,6 +58,7 @@ const FullChat = ({ persona, messages, setMessages }: FullCharProps) => {
   return (
     <div className="flex flex-col h-[90vh] w-[90vw]">
       {/* Chat area */}
+      <h1>{persona}</h1>
       <div className="chatArea flex-1 bg-blue-300 overflow-y-auto p-4">
         {/* <AssistantChatBjjjjjubble text="Hey! How can I help you today?" />
         <UserChatBubble text="Hey, I’m trying to build a chat UI in React." />
