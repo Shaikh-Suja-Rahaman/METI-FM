@@ -1,18 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import AssistantChatBubble from "./AssistantChatBubble";
 import UserChatBubble from "./UserChatBubble";
-import { Send } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import axios from "axios";
+import { ScrollArea } from "./ui/scroll-area";
+
+type Message = {
+  role: string;
+  message: string;
+};
 
 type FullChatProps = {
   persona: string;
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
-};
-
-type Message = {
-  role: string;
-  message: string;
 };
 
 const personaLabels: Record<string, string> = {
@@ -21,24 +22,40 @@ const personaLabels: Record<string, string> = {
   harshCoach: "Harsh Coach",
 };
 
+const personaHeaderColors: Record<string, string> = {
+  chillFriend: "bg-vibeSky text-vibeSky-foreground",
+  gentleListener: "bg-vibeMint text-vibeMint-foreground",
+  harshCoach: "bg-vibeCoral text-vibeCoral-foreground",
+};
+
 const FullChat = ({ persona, messages, setMessages }: FullChatProps) => {
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
-  const bodyRef = useRef<HTMLDivElement>(null);
+  const scrollViewportRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-scroll to latest message
   useEffect(() => {
-    if (bodyRef.current) {
-      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+    if (scrollViewportRef.current) {
+      const scrollableNode = scrollViewportRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollableNode) {
+        scrollableNode.scrollTop = scrollableNode.scrollHeight;
+      } else {
+        // Fallback
+        scrollViewportRef.current.scrollTop = scrollViewportRef.current.scrollHeight;
+      }
     }
   }, [messages]);
 
-  const sendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const sendMessage = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     const trimmed = text.trim();
     if (!trimmed || sending) return;
 
     setText("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
     setSending(true);
 
     const userMessage = { role: "user", message: trimmed };
@@ -69,52 +86,73 @@ const FullChat = ({ persona, messages, setMessages }: FullChatProps) => {
   };
 
   return (
-    <div className="neo-chat">
+    <div className="flex flex-col h-full overflow-hidden">
       {/* Header */}
-      <div className={`neo-chat-header neo-chat-header--${persona}`}>
-        <div className="neo-chat-title">{personaLabels[persona] || persona}</div>
-        <span className={`neo-pill neo-pill--${persona}`}>
+      <div className={`px-6 py-4 border-b-2  border-border flex items-center justify-between ${personaHeaderColors[persona] || 'bg-accent text-accent-foreground'}`}>
+        {/* <div className="font-display text-xl tracking-tight uppercase">
+          {personaLabels[persona] || persona}
+        </div> */}
+        <span className="inline-block px-3 py-1  rounded-full border-2 border-border bg-background text-foreground text-xs font-bold uppercase tracking-wider neo-shadow-sm">
           {personaLabels[persona] || persona}
         </span>
       </div>
 
       {/* Messages */}
-      <div className="neo-chat-body" ref={bodyRef}>
-        {messages && messages.length > 0 ? (
-          messages.map((msg, index) =>
-            msg.role === "user" ? (
-              <UserChatBubble key={index} text={msg.message} />
-            ) : msg.role === "assistant" ? (
-              <AssistantChatBubble key={index} text={msg.message} />
-            ) : null
-          )
-        ) : (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", opacity: 0.45, fontSize: "14px", fontWeight: 600 }}>
-            Say something to get the conversation started ✌️
-          </div>
-        )}
-        {sending && (
-          <div className="bubble-row bubble-row--assistant">
-            <div className="bubble bubble-assistant" style={{ opacity: 0.6, fontStyle: "italic" }}>
-              typing…
+      <ScrollArea className="flex-1 p-4" ref={scrollViewportRef}>
+        <div className="flex flex-col mx-auto w-full pt-4">
+          {messages && messages.length > 0 ? (
+            messages.map((msg, index) =>
+              msg.role === "user" ? (
+                <UserChatBubble key={index} text={msg.message} colorClass={personaHeaderColors[persona]} />
+              ) : msg.role === "assistant" ? (
+                <AssistantChatBubble key={index} text={msg.message} />
+              ) : null
+            )
+          ) : (
+            <div className="flex items-center justify-center h-48 opacity-50 text-sm font-bold mt-12">
+              Say something to get the conversation started
             </div>
-          </div>
-        )}
-      </div>
+          )}
+          {sending && (
+            <div className="flex w-full justify-start mb-4 pl-3">
+              <div className="max-w-[80%] bg-card text-muted-foreground p-3 rounded-xl rounded-tl-sm border-2 border-border italic text-sm font-medium">
+                typing…
+              </div>
+            </div>
+          )}
+        </div>
+      </ScrollArea>
 
       {/* Input */}
-      <div className="neo-chat-footer">
-        <form onSubmit={sendMessage} className="neo-input-row">
-          <input
-            type="text"
+      <div className="p-4 border-t-2 border-border bg-card">
+        <form onSubmit={sendMessage} className="flex gap-3 max-w-4xl mx-auto w-full">
+          <textarea
+            ref={textareaRef}
+            rows={1}
             placeholder="Type a message…"
-            className="neo-input"
+            className="flex-1 max-h-[200px] py-3 px-4 resize-none rounded-md border-2 border-border bg-background text-foreground font-medium focus:outline-none focus:ring-0 focus:border-border neo-shadow-sm placeholder:text-muted-foreground disabled:opacity-50"
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) => {
+              setText(e.target.value);
+              e.target.style.height = 'auto';
+              // Add 4px to account for the border-2 (2px top + 2px bottom) under border-box sizing
+              e.target.style.height = `${e.target.scrollHeight + 4}px`;
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
             disabled={sending}
           />
-          <button type="submit" className="neo-send" disabled={sending} aria-label="Send">
-            <Send size={20} />
+          <button 
+            type="submit" 
+            className={`px-5 flex items-center justify-center rounded-md border-2 border-border neo-shadow-sm disabled:opacity-50 disabled:pointer-events-none ${personaHeaderColors[persona] || 'bg-foreground text-background'}`} 
+            disabled={sending} 
+            aria-label="Send"
+          >
+            <ArrowUp size={24} strokeWidth={3} />
           </button>
         </form>
       </div>

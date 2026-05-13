@@ -1,9 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 type Option = {
   value: string
   label: string
-  color: string // CSS var or hex
+  colorClass: string 
 }
 
 type PersonaSelectProps = {
@@ -12,73 +19,32 @@ type PersonaSelectProps = {
 }
 
 const options: Option[] = [
-  { value: 'chillFriend',    label: 'Chill Friend',     color: 'var(--a-sky)'   },
-  { value: 'gentleListener', label: 'Gentle Listener',  color: 'var(--a-mint)'  },
-  { value: 'harshCoach',     label: 'Harsh Coach',      color: 'var(--a-coral)' },
+  { value: 'chillFriend',    label: 'Chill Friend',     colorClass: 'bg-vibeSky'   },
+  { value: 'gentleListener', label: 'Gentle Listener',  colorClass: 'bg-vibeMint'  },
+  { value: 'harshCoach',     label: 'Harsh Coach',      colorClass: 'bg-vibeCoral' },
 ]
 
 const PersonaSelect = ({ value, onChange }: PersonaSelectProps) => {
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
-  const selected = options.find(o => o.value === value) || options[0]
-
-  // Close on outside click
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [])
-
-  const handleSelect = (optValue: string) => {
-    onChange(optValue)
-    setOpen(false)
-  }
-
   return (
-    <div className="neo-dropdown" ref={ref}>
-      <button
-        type="button"
-        className={`neo-dropdown-trigger${open ? ' open' : ''}`}
-        onClick={() => setOpen(prev => !prev)}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-      >
-        <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span
-            className="neo-dropdown-dot"
-            style={{ background: selected.color }}
-          />
-          {selected.label}
-        </span>
-        <span className="neo-dropdown-arrow">▼</span>
-      </button>
-
-      {open && (
-        <div className="neo-dropdown-menu" role="listbox">
-          {options.map(opt => (
-            <button
-              key={opt.value}
-              type="button"
-              role="option"
-              aria-selected={opt.value === value}
-              className={`neo-dropdown-option${opt.value === value ? ' selected' : ''}`}
-              onClick={() => handleSelect(opt.value)}
-            >
-              <span
-                className="neo-dropdown-dot"
-                style={{ background: opt.color }}
-              />
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-full h-12 font-bold focus:ring-0 focus:ring-offset-0 border-2 border-border rounded-md bg-card">
+        <SelectValue placeholder="Select a persona" />
+      </SelectTrigger>
+      <SelectContent className="border-2 border-border rounded-md shadow-md bg-card">
+        {options.map((opt) => (
+          <SelectItem 
+            key={opt.value} 
+            value={opt.value}
+            className="font-bold cursor-pointer focus:bg-accent focus:text-accent-foreground py-3"
+          >
+            <div className="flex items-center gap-3">
+              <span className={`w-3 h-3 rounded-full border border-border ${opt.colorClass}`} />
               {opt.label}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+            </div>
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   )
 }
 

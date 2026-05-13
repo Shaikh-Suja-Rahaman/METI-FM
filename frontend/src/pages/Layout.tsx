@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import FullChat from '../components/FullChat'
 import { Persona } from '../PersonaType'
 import HistoryBar from '../components/HistoryBar';
 import PersonaSelect from '../components/PersonaSelect';
+import { useTheme } from '../components/ThemeProvider';
+import { Moon, Sun } from 'lucide-react';
 
 export type Message = {
   role: string;
@@ -17,7 +19,6 @@ export type Conversation = {
   messages: Message[];
 };
 
-/** Derive a friendly title from the first user message */
 const deriveTitle = (messages: Message[]): string => {
   const firstUser = messages.find(m => m.role === 'user');
   if (!firstUser) return 'New Conversation';
@@ -27,6 +28,7 @@ const deriveTitle = (messages: Message[]): string => {
 
 const Layout = () => {
   const [selectedPersona, setSelectedPersona] = useState<string>(Persona.chillFriend);
+  const { theme, setTheme } = useTheme();
 
   const [conversations, setConversations] = useState<Conversation[]>(() => {
     try {
@@ -57,7 +59,6 @@ const Layout = () => {
 
   const deleteConversation = (id: string) => {
     setConversations(prev => prev.filter(c => c.id !== id));
-    // If the deleted chat was active, deselect
     if (activeConversationId === id) {
       setActiveConversationId(null);
     }
@@ -70,37 +71,46 @@ const Layout = () => {
     setConversations(prev => prev.map(convo => {
       if (convo.id !== activeConversationId) return convo;
       const newMessages = typeof updater === 'function' ? updater(convo.messages) : updater;
-      // Auto-update the title once the first user message arrives
       const newTitle = convo.title === 'New Conversation' ? deriveTitle(newMessages) : convo.title;
       return { ...convo, messages: newMessages, title: newTitle };
     }));
   };
 
   return (
-    <div className="neo-shell">
+    <div className="h-screen w-full flex bg-background text-foreground p-4 gap-4 overflow-hidden">
       {/* ── Sidebar ── */}
-      <aside className="neo-sidebar">
+      <aside className="w-[320px] flex-shrink-0 flex flex-col gap-4">
         {/* Brand + controls */}
-        <div className="neo-card neo-panel">
-          <div className="neo-brand">
-            <div className="neo-title">Mood Space</div>
-            <div className="neo-subtitle">Your neobrutalist vibe lab</div>
+        <div className="bg-card border-2 border-border p-6 rounded-xl shadow-neo flex flex-col gap-6 relative">
+          <button
+            className="absolute top-4 right-4 p-2 rounded-full border-2 border-transparent hover:border-border hover:bg-muted transition-colors"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            title="Toggle theme"
+          >
+            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+
+          <div className="flex flex-col gap-1 pr-10">
+            <div className="font-display text-3xl tracking-tight text-foreground">Mood Space</div>
+            <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Your neobrutalist vibe lab</div>
           </div>
 
-          <label className="neo-label" htmlFor="persona-select">Persona</label>
-          <PersonaSelect
-            value={selectedPersona}
-            onChange={setSelectedPersona}
-          />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-bold uppercase tracking-wider text-foreground">Persona</label>
+            <PersonaSelect
+              value={selectedPersona}
+              onChange={setSelectedPersona}
+            />
+          </div>
 
-          <button onClick={createNewChat} className="neo-btn">
+          <button onClick={createNewChat} className={`h-12 flex items-center justify-center font-bold uppercase tracking-widest border-2 border-border rounded-md  neo-shadow-sm transition-all ${selectedPersona === Persona.chillFriend ? "bg-vibeSky text-vibeSky-foreground" : selectedPersona === Persona.gentleListener ? "bg-vibeMint text-vibeMint-foreground" : "bg-vibeCoral text-vibeCoral-foreground"}`}>
             + New Chat
           </button>
         </div>
 
         {/* History */}
-        <div className="neo-card neo-history">
-          <div className="neo-section-title">History</div>
+        <div className="bg-card border-2 border-border p-6 rounded-xl shadow-neo flex-1 flex flex-col overflow-hidden">
+          <div className="font-display text-xl tracking-tight uppercase text-foreground text-center font-bold ">History</div>
           <HistoryBar
             conversations={conversations}
             activeConversationId={activeConversationId}
@@ -111,38 +121,39 @@ const Layout = () => {
       </aside>
 
       {/* ── Main ── */}
-      <main className="neo-main">
+      <main className="flex-1 flex flex-col h-full bg-background bg-grid rounded-xl min-w-0 overflow-hidden border-2 border-border shadow-neo">
         {activeConversationId && activeConversation
           ? (
             <FullChat
+              key={activeConversationId}
               persona={activeConversation.persona}
               messages={currentMessages}
               setMessages={setCurrentMessages}
             />
           )
           : (
-            <div className="neo-empty-state">
-              <div className="neo-empty-icon">💬</div>
+            <div className="h-full flex flex-col items-center justify-center p-8 text-center w-full">
+              <div className="text-6xl mb-6"></div>
 
-              <div>
-                <div className="neo-empty-heading">Start a new vibe</div>
-                <div className="neo-empty-sub" style={{ marginTop: 8 }}>
-                  Pick a persona, hit <strong>+ New Chat</strong>, and let the conversation flow.
-                </div>
+              <div className="mb-12">
+                <h1 className="font-display text-4xl mb-2">Start a new vibe</h1>
+                <p className="text-muted-foreground font-medium text-lg">
+                  Pick a persona, hit <strong className="text-foreground">+ New Chat</strong>, and let the conversation flow.
+                </p>
               </div>
 
-              <div className="neo-empty-hint">
-                <div className="neo-empty-step">
-                  <div className="neo-empty-step-num">1</div>
+              <div className="flex flex-col gap-4 text-left w-full max-w-md">
+                <div className="flex items-center gap-4 bg-background border-2 border-border p-4 rounded-xl shadow-neo-sm font-bold">
+                  <div className="w-8 h-8 rounded-full border-2 border-border bg-vibeSky text-vibeSky-foreground flex items-center justify-center text-sm font-display shrink-0">1</div>
                   Choose a persona from the sidebar
                 </div>
-                <div className="neo-empty-step">
-                  <div className="neo-empty-step-num" style={{ background: 'var(--a-mint)' }}>2</div>
-                  Hit <strong style={{ marginLeft: 4 }}>+ New Chat</strong> to begin
+                <div className="flex items-center gap-4 bg-background border-2 border-border p-4 rounded-xl shadow-neo-sm font-bold">
+                  <div className="w-8 h-8 rounded-full border-2 border-border bg-vibeMint text-vibeMint-foreground flex items-center justify-center text-sm font-display shrink-0">2</div>
+                  Hit <strong className="text-foreground ml-1">+ New Chat</strong> to begin
                 </div>
-                <div className="neo-empty-step">
-                  <div className="neo-empty-step-num" style={{ background: 'var(--a-coral)', color: '#fff' }}>3</div>
-                  Type your first message ✌️
+                <div className="flex items-center gap-4 bg-background border-2 border-border p-4 rounded-xl shadow-neo-sm font-bold">
+                  <div className="w-8 h-8 rounded-full border-2 border-border bg-vibeCoral text-vibeCoral-foreground flex items-center justify-center text-sm font-display shrink-0">3</div>
+                  Type your first message 
                 </div>
               </div>
             </div>

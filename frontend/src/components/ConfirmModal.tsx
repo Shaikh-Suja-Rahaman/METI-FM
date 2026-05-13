@@ -1,4 +1,14 @@
-import React, { useEffect } from 'react'
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 type ConfirmModalProps = {
   title: string
@@ -6,6 +16,7 @@ type ConfirmModalProps = {
   confirmLabel?: string
   onConfirm: () => void
   onCancel: () => void
+  open: boolean
 }
 
 const ConfirmModal = ({
@@ -14,38 +25,35 @@ const ConfirmModal = ({
   confirmLabel = 'Delete',
   onConfirm,
   onCancel,
+  open
 }: ConfirmModalProps) => {
-  // Close on Escape key
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onCancel()
-    }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
-  }, [onCancel])
-
   return (
-    <div className="modal-backdrop" onClick={onCancel}>
-      <div
-        className="modal-box"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-      >
-        <div className="modal-icon">⚠️</div>
-        <div className="modal-title" id="modal-title">{title}</div>
-        <div className="modal-message">{message}</div>
-        <div className="modal-actions">
-          <button className="modal-btn modal-btn--cancel" onClick={onCancel}>
+    <AlertDialog open={open} onOpenChange={(isOpen) => !isOpen && onCancel()}>
+      <AlertDialogContent className="neo-border shadow-neo">
+        <AlertDialogHeader>
+          <AlertDialogTitle className="font-display text-2xl flex items-center gap-2">
+            {title}
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-base text-muted-foreground font-medium">
+            {message}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className="mt-4 sm:justify-start gap-2">
+          <button 
+            onClick={onCancel} 
+            className="h-10 px-4 inline-flex items-center justify-center text-sm font-medium bg-background text-foreground rounded-md border-2 border-border neo-shadow-sm transition-all duration-200 ease-in-out flex-1 sm:flex-none"
+          >
             Cancel
           </button>
-          <button className="modal-btn modal-btn--confirm" onClick={onConfirm}>
+          <button 
+            onClick={onConfirm} 
+            className="h-10 px-4 inline-flex items-center justify-center text-sm font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-md border-2 border-border neo-shadow-sm transition-all duration-200 ease-in-out flex-1 sm:flex-none"
+          >
             {confirmLabel}
           </button>
-        </div>
-      </div>
-    </div>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }
 

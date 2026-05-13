@@ -1,22 +1,12 @@
-import { useState } from 'react'
-
-
 import './App.css'
-import FullChat from './components/FullChat'
-import { Persona } from './PersonaType'
 import Layout from './pages/Layout'
-
+import { ThemeProvider } from './components/ThemeProvider'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-
-    <>
-      {/* <FullChat persona={Persona.HarshCoach}/> */}
-      <Layout/>
-    </>
-
+    <ThemeProvider defaultTheme="system" storageKey="mood-space-theme">
+      <Layout />
+    </ThemeProvider>
   )
 }
 
