@@ -4,7 +4,8 @@ import { Persona } from '../PersonaType'
 import HistoryBar from '../components/HistoryBar';
 import PersonaSelect from '../components/PersonaSelect';
 import { useTheme } from '../components/ThemeProvider';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Settings } from 'lucide-react';
+import SettingsModal from "../components/settingsModal"
 
 export type Message = {
   role: string;
@@ -29,6 +30,8 @@ const deriveTitle = (messages: Message[]): string => {
 const Layout = () => {
   const [selectedPersona, setSelectedPersona] = useState<string>(Persona.chillFriend);
   const { theme, setTheme } = useTheme();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
 
   const [conversations, setConversations] = useState<Conversation[]>(() => {
     try {
@@ -82,17 +85,26 @@ const Layout = () => {
       <aside className="w-[320px] flex-shrink-0 flex flex-col gap-4">
         {/* Brand + controls */}
         <div className="bg-card border-2 border-border p-6 rounded-xl shadow-neo flex flex-col gap-6 relative">
-          <button
-            className="absolute top-4 right-4 p-2 rounded-full border-2 border-transparent hover:border-border hover:bg-muted transition-colors"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            title="Toggle theme"
-          >
-            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
+          <div className="absolute top-4 right-4 flex gap-2">
+            <button
+              className="p-2 rounded-full border-2 border-transparent hover:border-border hover:bg-muted transition-colors"
+              onClick={() => setIsSettingsOpen(true)}
+              title="Settings"
+            >
+              <Settings size={20} />
+            </button>
+            <button
+              className="p-2 rounded-full border-2 border-transparent hover:border-border hover:bg-muted transition-colors"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              title="Toggle theme"
+            >
+              {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+          </div>
 
           <div className="flex flex-col gap-1 pr-10">
             <div className="font-brand text-3xl tracking-tight text-foreground font-bold">Mood Space</div>
-            <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Your neobrutalist vibe lab</div>
+            <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Your  vibe lab</div>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -129,6 +141,7 @@ const Layout = () => {
               persona={activeConversation.persona}
               messages={currentMessages}
               setMessages={setCurrentMessages}
+              onOpenSettings={() => setIsSettingsOpen(true)}
             />
           )
           : (
@@ -160,6 +173,10 @@ const Layout = () => {
           )
         }
       </main>
+      <SettingsModal 
+        open={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+      />
     </div>
   );
 };

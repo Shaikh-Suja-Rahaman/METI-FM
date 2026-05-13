@@ -20,6 +20,11 @@ export const sendHarshResponse = async (req: Request, res: Response) => {
     const query: Message[] = req.body.contents;
     const recentMessages = query.slice(-10);
 
+    const customApiKey = req.headers['x-nvidia-api-key'] as string | undefined;
+    const activeClient = customApiKey
+      ? new OpenAI({ baseURL: "https://integrate.api.nvidia.com/v1", apiKey: customApiKey })
+      : client;
+
     const openaiMessages: OpenAI.Chat.ChatCompletionMessageParam[] = [
       { role: "system", content: systemPrompt },
       ...recentMessages.map((msg) => ({
@@ -28,7 +33,7 @@ export const sendHarshResponse = async (req: Request, res: Response) => {
       })),
     ];
 
-    const completion = await client.chat.completions.create({
+    const completion = await activeClient.chat.completions.create({
       model: "meta/llama-3.1-70b-instruct",
       messages: openaiMessages,
       temperature: 0.7,

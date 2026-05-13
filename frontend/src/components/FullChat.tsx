@@ -4,6 +4,7 @@ import UserChatBubble from "./UserChatBubble";
 import { ArrowUp } from "lucide-react";
 import axios from "axios";
 import { ScrollArea } from "./ui/scroll-area";
+import FreeLimitModal from "./FreeLimitModal";
 
 type Message = {
   role: string;
@@ -14,6 +15,7 @@ type FullChatProps = {
   persona: string;
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  onOpenSettings: () => void;
 };
 
 const personaLabels: Record<string, string> = {
@@ -28,9 +30,10 @@ const personaHeaderColors: Record<string, string> = {
   harshCoach: "bg-vibeCoral text-vibeCoral-foreground",
 };
 
-const FullChat = ({ persona, messages, setMessages }: FullChatProps) => {
+const FullChat = ({ persona, messages, setMessages, onOpenSettings }: FullChatProps) => {
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
+  const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
   const scrollViewportRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -47,10 +50,19 @@ const FullChat = ({ persona, messages, setMessages }: FullChatProps) => {
     }
   }, [messages]);
 
-  const sendMessage = async (e?: React.FormEvent) => {
+    const sendMessage = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const trimmed = text.trim();
     if (!trimmed || sending) return;
+
+    // Check limits and keys
+    const customKey = localStorage.getItem('customnvidiakey') || '';
+    const freeMessagesUsed = parseInt(localStorage.getItem('freemessagess') || '0', 10);
+
+    if (freeMessagesUsed >= 10 && !customKey) {
+      setIsLimitModalOpen(true);
+      return;
+    }
 
     setText("");
     if (textareaRef.current) {
@@ -63,10 +75,20 @@ const FullChat = ({ persona, messages, setMessages }: FullChatProps) => {
 
     try {
       const payload = { contents: [...(messages || []), userMessage] };
+      const headers: Record<string, string> = {};
+      if (customKey) headers['x-nvidia-api-key'] = customKey;
+
       const response = await axios.post(
         `http://localhost:5001/api/chat/${persona}`,
-        payload
+        payload,
+        { headers }
       );
+
+      // Only increment the counter if they're on the free tier
+      if (!customKey) {
+        localStorage.setItem('freemessagess', (freeMessagesUsed + 1).toString());
+      }
+
       setMessages((prev) => [
         ...(prev || []),
         { role: "assistant", message: response.data },
@@ -84,6 +106,7 @@ const FullChat = ({ persona, messages, setMessages }: FullChatProps) => {
       setSending(false);
     }
   };
+
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -156,6 +179,12 @@ const FullChat = ({ persona, messages, setMessages }: FullChatProps) => {
           </button>
         </form>
       </div>
+
+      <FreeLimitModal
+        open={isLimitModalOpen}
+        onClose={() => setIsLimitModalOpen(false)}
+        onOpenSettings={onOpenSettings}
+      />
     </div>
   );
 };
