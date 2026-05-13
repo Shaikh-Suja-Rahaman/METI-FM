@@ -93,6 +93,7 @@ module.exports = {
       fontFamily: {
         sans: ["Space Grotesk", "sans-serif"],
         display: ["Archivo Black", "sans-serif"],
+        brand: ["Unica One", "sans-serif"],
       },
     },
   },

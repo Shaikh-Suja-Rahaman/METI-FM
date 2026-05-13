@@ -91,7 +91,7 @@ const Layout = () => {
           </button>
 
           <div className="flex flex-col gap-1 pr-10">
-            <div className="font-display text-3xl tracking-tight text-foreground">Mood Space</div>
+            <div className="font-brand text-3xl tracking-tight text-foreground font-bold">Mood Space</div>
             <div className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Your neobrutalist vibe lab</div>
           </div>
 
@@ -136,7 +136,7 @@ const Layout = () => {
               <div className="text-6xl mb-6"></div>
 
               <div className="mb-12">
-                <h1 className="font-display text-4xl mb-2">Start a new vibe</h1>
+                <h1 className="font-brand text-5xl mb-2">Start a new vibe</h1>
                 <p className="text-muted-foreground font-medium text-lg">
                   Pick a persona, hit <strong className="text-foreground">+ New Chat</strong>, and let the conversation flow.
                 </p>
@@ -153,7 +153,7 @@ const Layout = () => {
                 </div>
                 <div className="flex items-center gap-4 bg-background border-2 border-border p-4 rounded-xl shadow-neo-sm font-bold">
                   <div className="w-8 h-8 rounded-full border-2 border-border bg-vibeCoral text-vibeCoral-foreground flex items-center justify-center text-sm font-display shrink-0">3</div>
-                  Type your first message 
+                  Type your first message
                 </div>
               </div>
             </div>

@@ -122,4 +122,9 @@
       linear-gradient(to bottom, hsl(var(--foreground) / 0.06) 1px, transparent 1px);
     background-position: center top;
   }
+
+  .mask-fade-y {
+    mask-image: linear-gradient(to bottom, transparent, black 16px, black calc(100% - 16px), transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 16px, black calc(100% - 16px), transparent);
+  }
 }

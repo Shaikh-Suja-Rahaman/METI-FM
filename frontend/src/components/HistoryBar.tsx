@@ -52,7 +52,7 @@ const HistoryBar = ({
         </div>
       ) : (
         <ScrollArea className="flex-1 w-full mt-4 pr-3">
-          <div className="flex flex-col gap-3 pb-4 px-2">
+          <div className="flex flex-col gap-3 pb-4 px-2 pt-2">
             {[...conversations].reverse().map((convo) => {
               const isActive = convo.id === activeConversationId;
               return (
