@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -7,79 +7,104 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
 } from './ui/alert-dialog';
-import { Settings, Key } from 'lucide-react';
+import { Settings, Key, Radio } from 'lucide-react';
 
-type settingsModalProps = {
-    open : boolean;
-    onClose : () => void;
-}
+type SettingsModalProps = {
+  open: boolean;
+  onClose: () => void;
+};
 
+const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
+  const [apiKey, setApiKey] = useState<string>('');
+  const [freeMessagesUsed, setFreeMessagesUsed] = useState<number>(0);
 
-const settingsModal = ({open, onClose}) => {
-    const [apiKey, setApiKey] = useState<string>('');
-    const [freeMessagesUsed, setFreeMessagesUsed] = useState<number>(0);
-
-    useEffect(()=>{
-        if(localStorage.getItem('customnvidiakey')){
-            setApiKey(localStorage.getItem('customnvidiakey'));
-        }
-        if(localStorage.getItem('freemessagess')){
-            setFreeMessagesUsed(parseInt(localStorage.getItem('freemessagess')));
-        }
-
-    }, [open])
-   
-    const handleSave = () => {
-        localStorage.setItem('customnvidiakey', apiKey);
-        localStorage.setItem('freemessagess', freeMessagesUsed.toString());
-        onClose();
+  useEffect(() => {
+    if (open) {
+      const key = localStorage.getItem('customnvidiakey');
+      if (key) setApiKey(key);
+      const used = parseInt(localStorage.getItem('freemessagess') || '0', 10);
+      setFreeMessagesUsed(used);
     }
-    
+  }, [open]);
+
+  const handleSave = () => {
+    localStorage.setItem('customnvidiakey', apiKey);
+    onClose();
+  };
+
+  const handleReset = () => {
+    if (confirm('Reset free message counter? This cannot be undone.')) {
+      localStorage.setItem('freemessagess', '0');
+      setFreeMessagesUsed(0);
+    }
+  };
+
   return (
     <AlertDialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <AlertDialogContent className="neo-border shadow-neo sm:max-w-md">
+      <AlertDialogContent className="border-2 border-border sm:max-w-md" style={{ borderRadius: '4px', boxShadow: '5px 5px 0 #0f0f0f' }}>
         <AlertDialogHeader>
-          <AlertDialogTitle className="font-display text-2xl flex items-center gap-2">
-            <Settings size={24} /> Settings
+          <AlertDialogTitle className="font-display text-xl flex items-center gap-2 uppercase tracking-wider">
+            <Radio size={20} />
+            METI FM — Settings
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-base text-muted-foreground font-medium">
-            Configure your API access to keep chatting.
+          <AlertDialogDescription className="font-mono text-xs text-muted-foreground">
+            Configure transmission access. Free tier: 10 messages using the default signal relay.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        
-        <div className="flex flex-col gap-4 py-4">
-          <div className="flex items-center justify-between p-3 rounded-lg border-2 border-border bg-card neo-shadow-sm">
-            <span className="font-bold text-sm uppercase tracking-wide">Free Messages Used</span>
-            <span className={`font-bold ${freeMessagesUsed >= 10 ? 'text-destructive' : 'text-foreground'}`}>
-              {freeMessagesUsed} / 10
-            </span>
+
+        <div className="flex flex-col gap-4 py-3">
+          {/* Free tier status */}
+          <div className="flex items-center justify-between p-3 border-2 border-border bg-card" style={{ borderRadius: '2px' }}>
+            <span className="font-mono text-xs uppercase tracking-wider">Free transmissions used</span>
+            <div className="flex items-center gap-2">
+              <span className={`font-bold font-mono text-sm ${freeMessagesUsed >= 10 ? 'text-red-500' : 'text-foreground'}`}>
+                {freeMessagesUsed} / 10
+              </span>
+              {freeMessagesUsed >= 10 && (
+                <button
+                  onClick={handleReset}
+                  className="text-[9px] font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground border border-border px-1.5 py-0.5"
+                  style={{ borderRadius: '2px' }}
+                >
+                  reset
+                </button>
+              )}
+            </div>
           </div>
+
+          {/* API key input */}
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
-              <Key size={16} /> Custom NVIDIA API Key
+            <label className="font-mono text-xs uppercase tracking-wider flex items-center gap-2">
+              <Key size={12} />
+              Custom NVIDIA API Key
             </label>
             <input
               type="password"
               placeholder="nvapi-..."
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              className="flex-1 py-3 px-4 rounded-md border-2 border-border bg-background text-foreground font-medium focus:outline-none focus:ring-0 focus:border-border neo-shadow-sm placeholder:text-muted-foreground"
+              className="py-2.5 px-3 border-2 border-border bg-background text-foreground font-mono text-sm focus:outline-none placeholder:text-muted-foreground"
+              style={{ borderRadius: '2px' }}
             />
-            <span className="text-xs text-muted-foreground font-medium">
-              If provided, this key will be used instead of the free tier. Stored locally in your browser.
+            <span className="text-[10px] font-mono text-muted-foreground leading-relaxed">
+              Your key bypasses the free tier and is stored only in your browser. Get a free key at{' '}
+              <span className="text-foreground">build.nvidia.com</span>
             </span>
           </div>
         </div>
-        <AlertDialogFooter className="mt-4 sm:justify-start gap-2">
-          <button 
-            onClick={onClose} 
-            className="h-10 px-4 inline-flex items-center justify-center text-sm font-medium bg-background text-foreground rounded-md border-2 border-border neo-shadow-sm transition-all duration-200 ease-in-out flex-1 sm:flex-none"
+
+        <AlertDialogFooter className="mt-2 sm:justify-start gap-2">
+          <button
+            onClick={onClose}
+            className="h-9 px-4 inline-flex items-center justify-center font-mono text-xs font-medium bg-background text-foreground border-2 border-border transition-all flex-1 sm:flex-none neo-shadow-sm"
+            style={{ borderRadius: '2px' }}
           >
             Cancel
           </button>
-          <button 
-            onClick={handleSave} 
-            className="h-10 px-4 inline-flex items-center justify-center text-sm font-bold uppercase tracking-wider bg-foreground text-background rounded-md border-2 border-border neo-shadow-sm transition-all duration-200 ease-in-out flex-1 sm:flex-none"
+          <button
+            onClick={handleSave}
+            className="h-9 px-4 inline-flex items-center justify-center font-mono text-xs font-bold uppercase tracking-wider bg-foreground text-background border-2 border-border transition-all flex-1 sm:flex-none neo-shadow-sm"
+            style={{ borderRadius: '2px' }}
           >
             Save Key
           </button>
@@ -87,6 +112,6 @@ const settingsModal = ({open, onClose}) => {
       </AlertDialogContent>
     </AlertDialog>
   );
-}
+};
 
-export default settingsModal
+export default SettingsModal;

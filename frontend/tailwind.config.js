@@ -50,21 +50,34 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        vibeMint: {
-          DEFAULT: "hsl(var(--vibe-mint))",
-          foreground: "hsl(var(--vibe-mint-foreground))",
+        // ── METI FM Entity Colors ─────────────────────────────
+        pip: {
+          DEFAULT: "hsl(var(--pip))",
+          foreground: "hsl(var(--pip-foreground))",
         },
-        vibeSky: {
-          DEFAULT: "hsl(var(--vibe-sky))",
-          foreground: "hsl(var(--vibe-sky-foreground))",
+        orim: {
+          DEFAULT: "hsl(var(--orim))",
+          foreground: "hsl(var(--orim-foreground))",
         },
-        vibeCoral: {
-          DEFAULT: "hsl(var(--vibe-coral))",
-          foreground: "hsl(var(--vibe-coral-foreground))",
+        glitch: {
+          DEFAULT: "hsl(var(--glitch))",
+          foreground: "hsl(var(--glitch-foreground))",
         },
-        vibeLavender: {
-          DEFAULT: "hsl(var(--vibe-lavender))",
-          foreground: "hsl(var(--vibe-lavender-foreground))",
+        horde: {
+          DEFAULT: "hsl(var(--horde))",
+          foreground: "hsl(var(--horde-foreground))",
+        },
+        vorrk: {
+          DEFAULT: "hsl(var(--vorrk))",
+          foreground: "hsl(var(--vorrk-foreground))",
+        },
+        husk: {
+          DEFAULT: "hsl(var(--husk))",
+          foreground: "hsl(var(--husk-foreground))",
+        },
+        signal: {
+          DEFAULT: "hsl(var(--signal))",
+          foreground: "hsl(var(--signal-foreground))",
         },
       },
       borderRadius: {
@@ -94,6 +107,7 @@ module.exports = {
         sans: ["Space Grotesk", "sans-serif"],
         display: ["Archivo Black", "sans-serif"],
         brand: ["Unica One", "sans-serif"],
+        mono: ["Space Mono", "monospace"],
       },
     },
   },

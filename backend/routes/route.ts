@@ -1,13 +1,24 @@
 import express from 'express';
 
-import {sendGentleResponse} from "../controller/gentleListener.ts"
-import { sendChillResponse } from '../controller/chillFriend.ts';
-import { sendHarshResponse } from '../controller/harshCoach.ts'; //note these are just functions, which take req, res
+import { sendPipResponse } from '../controller/pip.ts';
+import { sendOrimResponse } from '../controller/orim.ts';
+import { sendGlitchResponse } from '../controller/glitch.ts';
+import { sendHordeResponse } from '../controller/theHorde.ts';
+import { sendVorrkResponse } from '../controller/vorrk.ts';
+import { sendHuskResponse } from '../controller/theHusk.ts';
+import { sendSignalResponse } from '../controller/theSignal.ts';
 
 const router = express.Router();
 
-router.route('/chat/gentleListener').post(sendGentleResponse);
-router.route('/chat/chillFriend').post(sendChillResponse);
-router.route('/chat/harshCoach').post(sendHarshResponse);
+// Light Side
+router.route('/chat/pip').post(sendPipResponse);
+router.route('/chat/orim').post(sendOrimResponse);
+router.route('/chat/glitch').post(sendGlitchResponse);
+
+// Dark Side
+router.route('/chat/theHorde').post(sendHordeResponse);
+router.route('/chat/vorrk').post(sendVorrkResponse);
+router.route('/chat/theHusk').post(sendHuskResponse);
+router.route('/chat/theSignal').post(sendSignalResponse);
 
 export default router;

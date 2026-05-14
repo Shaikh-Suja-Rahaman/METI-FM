@@ -1,125 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Archivo+Black&family=Unica+One&family=Space+Mono:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
-    --background: 43 33% 91%; /* #f0ebe0 */
-    --foreground: 0 0% 6%; /* #0f0f0f */
-
-    --card: 60 14% 97%; /* #fafaf7 */
+    /* ── Base UI Tokens ─────────────────────────────── */
+    --background: 43 33% 91%;
+    --foreground: 0 0% 6%;
+    --card: 48 30% 95%;
     --card-foreground: 0 0% 6%;
- 
-    --popover: 60 14% 97%;
+    --popover: 48 30% 95%;
     --popover-foreground: 0 0% 6%;
- 
     --primary: 0 0% 6%;
-    --primary-foreground: 60 14% 97%;
- 
+    --primary-foreground: 48 30% 95%;
     --secondary: 40 10% 85%;
     --secondary-foreground: 0 0% 6%;
- 
     --muted: 40 10% 85%;
     --muted-foreground: 0 0% 40%;
- 
     --accent: 40 10% 85%;
     --accent-foreground: 0 0% 6%;
- 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 60 14% 97%;
-
-    --border: 0 0% 6%; /* #0f0f0f */
+    --destructive-foreground: 48 30% 95%;
+    --border: 0 0% 6%;
     --input: 0 0% 6%;
     --ring: 0 0% 6%;
- 
     --radius: 0.5rem;
-    
     --shadow-neo: 5px 5px 0px 0px rgba(15,15,15,1);
     --shadow-neo-sm: 3px 3px 0px 0px rgba(15,15,15,1);
 
-    /* Vibe Colors */
-    --vibe-mint: 152 70% 75%;
-    --vibe-mint-foreground: 0 0% 6%;
-    --vibe-sky: 200 80% 75%;
-    --vibe-sky-foreground: 0 0% 6%;
-    --vibe-coral: 10 80% 70%;
-    --vibe-coral-foreground: 0 0% 6%;
-    --vibe-lavender: 260 70% 80%;
-    --vibe-lavender-foreground: 0 0% 6%;
-  }
- 
-  .dark {
-    --background: 0 0% 9%; /* #171717 */
-    --foreground: 0 0% 98%; /* #fafafa */
- 
-    --card: 0 0% 12%; /* #1f1f1f */
-    --card-foreground: 0 0% 98%;
- 
-    --popover: 0 0% 12%;
-    --popover-foreground: 0 0% 98%;
- 
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
- 
-    --secondary: 0 0% 20%;
-    --secondary-foreground: 0 0% 98%;
- 
-    --muted: 0 0% 20%;
-    --muted-foreground: 0 0% 65%;
- 
-    --accent: 0 0% 20%;
-    --accent-foreground: 0 0% 98%;
- 
-    --destructive: 0 62% 40%;
-    --destructive-foreground: 0 0% 98%;
- 
-    --border: 0 0% 98%; /* White borders for dark mode neobrutalism */
-    --input: 0 0% 98%;
-    --ring: 0 0% 98%;
+    /* ── METI FM Entity Colors ─────────────────────── */
+    /* Light Side */
+    --pip: 88 60% 50%;
+    --pip-foreground: 0 0% 6%;
+    --orim: 270 50% 68%;
+    --orim-foreground: 0 0% 6%;
+    --glitch: 210 90% 58%;
+    --glitch-foreground: 0 0% 6%;
+    /* Dark Side */
+    --horde: 120 35% 22%;
+    --horde-foreground: 120 20% 85%;
+    --vorrk: 0 65% 28%;
+    --vorrk-foreground: 0 20% 90%;
+    --husk: 45 18% 68%;
+    --husk-foreground: 0 0% 6%;
+    --signal: 0 0% 8%;
+    --signal-foreground: 0 0% 80%;
 
-    --shadow-neo: 5px 5px 0px 0px rgba(255,255,255,1);
-    --shadow-neo-sm: 3px 3px 0px 0px rgba(255,255,255,1);
-
-    /* Vibe Colors - slightly muted for dark mode */
-    --vibe-mint: 152 60% 65%;
-    --vibe-mint-foreground: 0 0% 9%;
-    --vibe-sky: 200 70% 65%;
-    --vibe-sky-foreground: 0 0% 9%;
-    --vibe-coral: 10 70% 60%;
-    --vibe-coral-foreground: 0 0% 9%;
-    --vibe-lavender: 260 60% 70%;
-    --vibe-lavender-foreground: 0 0% 9%;
+    /* ── Decay System Variables (set dynamically via JS) ─ */
+    /* 0 = full decay (0.1 MHz), 1 = full safe (900 MHz)   */
+    --freq-level: 1;
+    --decay-crack-opacity: 0;
+    --decay-vine-size: 0px;
+    --decay-shake: 0px;
+    --decay-flicker-opacity: 0;
+    --decay-tilt: 0deg;
+    --decay-border-extra: 0px;
+    --decay-filter: saturate(1) brightness(1);
+    --decay-bg-hue: 43deg;
+    --decay-bg-sat: 33%;
+    --decay-bg-light: 91%;
+    --decay-text-weight: 400;
+    --decay-grid-opacity: 0.06;
+    --decay-glitch-speed: 0s;
   }
 }
- 
+
+/* ── Base Reset ────────────────────────────────────────────── */
 @layer base {
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased selection:bg-primary selection:text-primary-foreground;
-  }
-  
-  /* Standard Neobrutalist Utilities */
-  .neo-border {
-    @apply border-2 border-border;
-  }
-  
-  .neo-shadow {
-    @apply shadow-neo transition duration-200 ease-in-out hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_hsl(var(--border))] active:translate-x-[5px] active:translate-y-[5px] active:shadow-none;
-  }
-
-  .neo-shadow-sm {
-    @apply shadow-neo-sm transition duration-200 ease-in-out hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[4px_4px_0px_0px_hsl(var(--border))] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "kern" 1;
   }
 }
 
+/* ── Neo-brutalist Utilities ───────────────────────────────── */
 @layer utilities {
+  .neo-border {
+    @apply border-2 border-border;
+  }
+
+  .neo-shadow {
+    box-shadow: var(--shadow-neo);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .neo-shadow:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 7px 7px 0px 0px hsl(var(--border));
+  }
+  .neo-shadow:active {
+    transform: translate(5px, 5px);
+    box-shadow: none;
+  }
+
+  .neo-shadow-sm {
+    box-shadow: var(--shadow-neo-sm);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .neo-shadow-sm:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px 0px hsl(var(--border));
+  }
+  .neo-shadow-sm:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+  }
+
   .bg-grid {
     background-size: 32px 32px;
-    background-image: 
-      linear-gradient(to right, hsl(var(--foreground) / 0.06) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(var(--foreground) / 0.06) 1px, transparent 1px);
+    background-image:
+      linear-gradient(to right, hsl(var(--foreground) / var(--decay-grid-opacity)) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--foreground) / var(--decay-grid-opacity)) 1px, transparent 1px);
     background-position: center top;
   }
 
@@ -127,4 +122,130 @@
     mask-image: linear-gradient(to bottom, transparent, black 16px, black calc(100% - 16px), transparent);
     -webkit-mask-image: linear-gradient(to bottom, transparent, black 16px, black calc(100% - 16px), transparent);
   }
+
+  /* Decay-aware filter applied to entire app shell */
+  .decay-filter {
+    filter: var(--decay-filter);
+    transition: filter 0.6s ease;
+  }
+}
+
+/* ── Decay Animations ──────────────────────────────────────── */
+@keyframes meti-flicker {
+  0%, 100% { opacity: 1; }
+  8%  { opacity: 0.92; }
+  12% { opacity: 1; }
+  20% { opacity: 0.85; }
+  24% { opacity: 1; }
+  50% { opacity: 0.95; }
+  52% { opacity: 0.78; }
+  54% { opacity: 1; }
+}
+
+@keyframes meti-shake {
+  0%, 100% { transform: translate(0, 0) rotate(var(--decay-tilt)); }
+  20% { transform: translate(calc(var(--decay-shake) * -1), calc(var(--decay-shake) * 0.5)) rotate(var(--decay-tilt)); }
+  40% { transform: translate(var(--decay-shake), calc(var(--decay-shake) * -0.3)) rotate(var(--decay-tilt)); }
+  60% { transform: translate(calc(var(--decay-shake) * -0.5), var(--decay-shake)) rotate(var(--decay-tilt)); }
+  80% { transform: translate(var(--decay-shake), 0) rotate(var(--decay-tilt)); }
+}
+
+@keyframes meti-glitch-text {
+  0%, 90%, 100% { clip-path: none; transform: none; }
+  91% { clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); transform: translateX(-4px); }
+  92% { clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); transform: translateX(4px); }
+  93% { clip-path: none; transform: none; }
+  95% { clip-path: polygon(0 10%, 100% 10%, 100% 30%, 0 30%); transform: translateX(-2px); }
+  96% { clip-path: none; transform: none; }
+}
+
+@keyframes meti-title-glitch {
+  0%, 85%, 100% { transform: none; text-shadow: none; }
+  86% { transform: translateX(-3px); text-shadow: 3px 0 hsl(var(--vorrk)), -3px 0 hsl(var(--glitch)); }
+  87% { transform: translateX(3px); text-shadow: -3px 0 hsl(var(--vorrk)), 3px 0 hsl(var(--glitch)); }
+  88% { transform: none; text-shadow: none; }
+  92% { transform: translateX(-1px); text-shadow: 2px 0 hsl(var(--horde)); }
+  93% { transform: none; text-shadow: none; }
+}
+
+@keyframes meti-freq-static {
+  0%, 100% { opacity: 1; letter-spacing: normal; }
+  10% { opacity: 0.6; letter-spacing: 2px; }
+  11% { opacity: 1; }
+  50% { opacity: 0.8; }
+  51% { opacity: 1; }
+  70% { letter-spacing: -1px; opacity: 0.7; }
+  71% { letter-spacing: normal; opacity: 1; }
+}
+
+@keyframes meti-aria-pulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes meti-word-appear {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes meti-scan-line {
+  0% { top: -5%; }
+  100% { top: 105%; }
+}
+
+/* ── Decay-Driven Utility Classes ──────────────────────────── */
+.meti-shaking {
+  animation: meti-shake 0.4s ease-in-out infinite;
+}
+
+.meti-flickering {
+  animation: meti-flicker 3s linear infinite;
+}
+
+.meti-title-glitch {
+  animation: meti-title-glitch 6s linear infinite;
+}
+
+.meti-freq-static {
+  animation: meti-freq-static 2s linear infinite;
+}
+
+.meti-glitch-text {
+  animation: meti-glitch-text 4s linear infinite;
+}
+
+/* ── Crack Overlay Pseudo-element ──────────────────────────── */
+.crack-overlay::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: var(--decay-crack-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cpath d='M50,0 L80,60 L40,80 L100,140 L60,160 L110,220 L70,240 L130,300' stroke='%23000' stroke-width='1' fill='none' opacity='0.4'/%3E%3Cpath d='M350,0 L320,50 L370,90 L300,130 L360,180 L290,220 L350,270 L310,320' stroke='%23000' stroke-width='1' fill='none' opacity='0.35'/%3E%3Cpath d='M0,200 L60,210 L40,250 L120,260 L80,300' stroke='%23000' stroke-width='0.8' fill='none' opacity='0.3'/%3E%3Cpath d='M400,100 L340,110 L370,150 L300,160 L330,200' stroke='%23000' stroke-width='0.8' fill='none' opacity='0.3'/%3E%3C/svg%3E");
+  background-size: cover;
+  mix-blend-mode: multiply;
+  transition: opacity 0.8s ease;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border) / 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--border) / 0.5);
+}
+
+/* ── Signal word-by-word rendering ────────────────────────── */
+.signal-word {
+  display: inline;
+  opacity: 0;
+  animation: meti-word-appear 0.3s ease forwards;
 }
