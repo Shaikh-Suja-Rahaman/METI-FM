@@ -24,9 +24,7 @@ METI FM is a speculative engineering system that maps fictional consciousness si
 
 As frequencies decrease, the UI degrades to reflect signal quality, not mood. Translation instability increases because the model is forced to align nonhuman patterns with human syntax. ARIA, the onboard guide AI, monitors system integrity and becomes more concerned as the user descends. Unknown entities remain hidden until first contact, at which point they are indexed and exposed to the interface. The lowest bands are treated as older consciousness signatures, not as moral categories.
 
-<details>
-<summary>How METI FM Works</summary>
-
+## How METI FM Works
 
 A brief technical orientation before you begin.
 
@@ -56,8 +54,6 @@ As you tune lower, toward the Planck frequency at 1.855 x 10^43 Hz, wavelengths 
 
 The translation layer starts breaking down below the warning threshold. What you receive becomes increasingly raw. Increasingly direct. The interface reflects this. It was not designed to handle these frequencies. Neither, frankly, were you.
 
-</details>
-
 ## Features
 
 - Frequency-dial interface instead of character selection
@@ -68,9 +64,7 @@ The translation layer starts breaking down below the warning threshold. What you
 - Conversation history stored locally, no account required
 - Optional custom NVIDIA API key support
 
-<details>
-<summary>Backend Architecture</summary>
-
+## Backend Architecture
 
 The backend is intentionally thin. It is a set of entity-specific routes backed by system prompts and a single model call to NVIDIA NIM. There is no database and no session state. Each request is self-contained.
 
@@ -83,8 +77,6 @@ Request flow:
 5. The response text is returned directly to the client.
 
 This keeps the backend deterministic and easy to audit: prompts live in version control, requests are stateless, and the model call is the only external dependency.
-
-</details>
 
 ## Entities
 
