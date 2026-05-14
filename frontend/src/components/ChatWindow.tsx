@@ -118,7 +118,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
           style={{ ...entityColorStyle, borderRadius: '2px' }}
         >
           {entity?.name || entityId}
-          {entity?.dangerIcon ? ` ${entity.dangerIcon}` : ''}
         </span>
         <span className="font-mono text-[10px] opacity-40 tracking-widest">
           {frequencyMhz.toFixed(1)} MHz
@@ -130,9 +129,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         {/* ── Frequency lock warning + re-tune button ── */}
         {isLocked && (
           <div className="ml-auto flex items-center gap-2">
-            <span className="text-[9px] font-mono opacity-60 text-amber-400 uppercase tracking-wider">
-              dial mistuned
-            </span>
+
             <button
               onClick={onReTune}
               className="flex items-center gap-1.5 px-3 py-1 border-2 border-border text-[10px] font-bold uppercase tracking-wider neo-shadow-sm"
@@ -201,7 +198,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       >
         {/* Lock banner */}
         {isLocked && (
-          <div className="mb-2 px-3 py-1.5 border border-amber-800/60 bg-amber-950/30 text-amber-400 text-[10px] font-mono uppercase tracking-wider text-center" style={{ borderRadius: '2px' }}>
+          <div className="mb-2 px-3 py-1.5 border border-black bg-gray-950/30 text-white text-[10px] font-mono uppercase tracking-wider text-center" style={{ borderRadius: '2px' }}>
             Retune dial to {convEntity?.name} ({frequencyMhz.toFixed(1)} MHz) to transmit
           </div>
         )}

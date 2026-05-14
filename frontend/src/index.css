@@ -243,6 +243,12 @@
   background: hsl(var(--border) / 0.5);
 }
 
+/* Suppress focus ring on the SVG frequency dial */
+svg:focus, svg:focus-visible {
+  outline: none !important;
+}
+
+
 /* ── Signal word-by-word rendering ────────────────────────── */
 .signal-word {
   display: inline;

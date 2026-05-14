@@ -34,7 +34,7 @@ const ConfirmModal = ({
           <AlertDialogTitle className="font-display text-2xl flex items-center gap-2">
             {title}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-base text-muted-foreground font-medium">
+          <AlertDialogDescription className="text-base text-muted-foreground font-medium whitespace-pre-line">
             {message}
           </AlertDialogDescription>
         </AlertDialogHeader>

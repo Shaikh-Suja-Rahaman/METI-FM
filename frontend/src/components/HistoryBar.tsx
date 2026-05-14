@@ -51,6 +51,8 @@ const HistoryBar: React.FC<HistoryBarProps> = ({
             const tagBg    = entity?.hexColor  || '#888888';
             const tagColor = entity?.side === 'light' ? '#0f0f0f' : '#f0ece0';
 
+            const isDecayed = frequencyLevel < 0.222; // in the dark zone
+
             return (
               <div
                 key={convo.id}
@@ -64,16 +66,16 @@ const HistoryBar: React.FC<HistoryBarProps> = ({
                 style={{
                   borderRadius: '3px',
                   boxShadow: isActive ? 'none' : '3px 3px 0 hsl(var(--border))',
-                  // Card bg always reflects the entity's world, not current freq
-                  backgroundColor: isDark ? 'rgba(0,0,0,0.45)' : 'hsl(var(--card))',
-                  borderColor: isDark ? '#4a4a4a' : 'hsl(var(--border))',
+                  // Dark entity cards: always dark. Light entity cards: cream in dark mode so they stay readable
+                  backgroundColor: isDark ? '#1a1a1a' : isDecayed ? '#f0ece0' : 'hsl(var(--card))',
+                  borderColor: isDark ? '#3a3a3a' : isDecayed ? '#c0b89a' : 'hsl(var(--border))',
                 }}
                 onClick={() => onSelect(convo.id)}
                 onKeyDown={(e) => e.key === 'Enter' && onSelect(convo.id)}
               >
                 <div className="flex items-start justify-between gap-1">
                   <div className="font-mono text-[11px] leading-tight line-clamp-2 flex-1"
-                    style={{ color: isDark ? '#c0b8b0' : 'hsl(var(--foreground))' }}>
+                    style={{ color: isDark ? '#e8e0d0' : '#1a1a1a' }}>
                     {convo.title}
                   </div>
                   <button
