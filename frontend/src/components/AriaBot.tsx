@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 // Thresholds tuned to new entity positions: HORDE=160, HUSK=120, VORRK=80, GOD?=40
 const AIRA_THRESHOLDS = [
   { key: 'welcome',  maxFreq: Infinity, level: 'safe'     as const,
-    text: "Welcome to METI FM.\n\nYou're tuned to the safe range. Drag the dial to find different cognitive signatures.\n\nEach frequency carries a different consciousness. Avoid below 6.6×10³⁵ Hz" },
+    text: "Welcome to METI FM.\n\nYou're tuned to the safe range. Drag the dial to find different cognitive signatures.\n\nEach frequency carries a different consciousness.\n\n Avoid below 6.6×10³⁵ Hz" },
   // Fires exactly at the ⚠ warning marker (200 MHz)
   { key: 'at200',   maxFreq: 200,      level: 'warn'     as const,
     text: "You're entering the restricted band.\n\nThe translation layer gets imprecise down here. The species beyond this threshold have not been cleared for civilian contact." },
