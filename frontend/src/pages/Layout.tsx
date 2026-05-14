@@ -69,16 +69,19 @@ const Layout = () => {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isResetOpen, setIsResetOpen] = useState(false);
   const [isDialLocked, setIsDialLocked] = useState(false);
+  const [airaResetKey, setAiraResetKey] = useState(0);
 
   const handleReset = () => {
     localStorage.removeItem('meti-conversations');
     localStorage.removeItem('meti-revealed-entities');
+    localStorage.removeItem('meti-aira-shown');
     setConversations([]);
     setRevealedEntities(new Set());
     setActiveConversationId(null);
     setFrequency(847.3);
     setInfoNewBadge(false);
     setIsResetOpen(false);
+    setAiraResetKey(k => k + 1);
   };
 
   const handleSelectConversation = (id: string) => {
@@ -98,13 +101,14 @@ const Layout = () => {
     }
     const newConvo: ConversationShape = {
       id: Date.now().toString(), entityId: entity.id,
-      frequencyMhz: entity.mhz, title: 'New Link',
+      // Store actual dial position so history restores exactly where you were
+      frequencyMhz: frequency, title: 'New Link',
       createdAt: Date.now(), messages: [],
     };
     setConversations(prev => [...prev, newConvo]);
     setActiveConversationId(newConvo.id);
-    // Auto-tune dial: GOD? goes to absolute minimum, others snap to entity dot
-    setFrequency(entity.id === 'theSignal' ? FREQ_MIN : entity.mhz);
+    // Do NOT auto-tune — that would trigger AIRA thresholds unexpectedly.
+    // Dial stays wherever the user left it.
   };
 
   const deleteConversation = (id: string) => {
@@ -269,7 +273,7 @@ const Layout = () => {
                 { step: '01', label: 'Tune the frequency dial',  warn: false },
                 { step: '02', label: 'Hit + ESTABLISH LINK',     warn: false },
                 { step: '03', label: 'Transmit your signal',     warn: false },
-                { step: '⚠',  label: 'Avoid below 200 MHz',     warn: true  },
+                { step: '⚠',  label: 'Avoid below 6.6×10³⁵ Hz',     warn: true  },
               ].map(item => (
                 <div
                   key={item.step}
@@ -292,7 +296,7 @@ const Layout = () => {
         )}
       </main>
 
-      <AiraBot frequency={frequency} frequencyLevel={frequencyLevel} onLockChange={setIsDialLocked} />
+      <AiraBot frequency={frequency} frequencyLevel={frequencyLevel} onLockChange={setIsDialLocked} resetKey={airaResetKey} />
       <SettingsModal open={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <InfoModal
         open={isInfoOpen}

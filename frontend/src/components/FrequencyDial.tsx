@@ -149,7 +149,7 @@ const FrequencyDial: React.FC<FrequencyDialProps> = ({ frequency, onChange, reve
           const textColor = isRevealed ? (entity.dotColor || entity.hexColor) : '#555';
 
           return (
-            <g key={entity.id} style={{ cursor: 'pointer' }} onClick={() => onChange(entity.mhz)}>
+            <g key={entity.id}>
               {!isRevealed && (
                 <circle cx={dotX} cy={dotY} r={6}
                   fill="none" stroke="#444" strokeWidth="0.5" strokeDasharray="2 2" opacity="0.4" />
@@ -194,7 +194,7 @@ const FrequencyDial: React.FC<FrequencyDialProps> = ({ frequency, onChange, reve
       </svg>
 
       <p className="text-[9px] font-mono text-center opacity-30 uppercase tracking-widest">
-        drag · click marker to snap
+        drag to tune
       </p>
     </div>
   );

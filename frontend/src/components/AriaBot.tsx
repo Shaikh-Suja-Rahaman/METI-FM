@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 // Thresholds tuned to new entity positions: HORDE=160, HUSK=120, VORRK=80, GOD?=40
 const AIRA_THRESHOLDS = [
   { key: 'welcome',  maxFreq: Infinity, level: 'safe'     as const,
-    text: "Welcome to METI FM.\n\nYou're tuned to the safe range. Drag the dial to find different cognitive signatures.\n\nEach frequency carries a different consciousness. Avoid frequencies below 200 MHz." },
+    text: "Welcome to METI FM.\n\nYou're tuned to the safe range. Drag the dial to find different cognitive signatures.\n\nEach frequency carries a different consciousness. Avoid below 6.6×10³⁵ Hz" },
   // Fires exactly at the ⚠ warning marker (200 MHz)
   { key: 'at200',   maxFreq: 200,      level: 'warn'     as const,
     text: "You're entering the restricted band.\n\nThe translation layer gets imprecise down here. The species beyond this threshold have not been cleared for civilian contact." },
@@ -31,31 +31,56 @@ const LEVEL_STYLES: Record<Level, { modal: string; dot: string; text: string; ba
   critical: { modal: 'bg-black border-red-900',           dot: 'bg-red-600',   text: 'text-red-200',    badge: 'text-red-500'   },
 };
 
-type AiraBotProps = { frequency: number; frequencyLevel: number; onLockChange: (locked: boolean) => void };
+type AiraBotProps = { frequency: number; frequencyLevel: number; onLockChange: (locked: boolean) => void; resetKey: number };
 
-const AiraBot: React.FC<AiraBotProps> = ({ frequency, frequencyLevel, onLockChange }) => {
+const AiraBot: React.FC<AiraBotProps> = ({ frequency, frequencyLevel, onLockChange, resetKey }) => {
   const [msg, setMsg]           = useState<{ text: string; level: Level } | null>(null);
   const [modalOpen, setModalOpen_] = useState(false);
-  const shown = useRef<Set<string>>(new Set());
+
+  // Load persisted shown-set once on mount
+  const shown = useRef<Set<string>>(new Set<string>());
+  const didInit = useRef(false);
+  if (!didInit.current) {
+    didInit.current = true;
+    try {
+      const s = localStorage.getItem('meti-aira-shown');
+      if (s) shown.current = new Set(JSON.parse(s));
+    } catch { /* ignore */ }
+  }
+
+  const addShown = (key: string) => {
+    shown.current.add(key);
+    try { localStorage.setItem('meti-aira-shown', JSON.stringify([...shown.current])); } catch { /* ignore */ }
+  };
 
   const setModal = (v: boolean) => {
     setModalOpen_(v);
-    onLockChange(v); // freeze/unfreeze the dial
+    onLockChange(v);
   };
 
   useEffect(() => {
     const w = AIRA_THRESHOLDS[0];
     if (!shown.current.has(w.key)) {
-      shown.current.add(w.key);
+      addShown(w.key);
       setMsg({ text: w.text, level: w.level });
       setModal(true);
     }
   }, []);
 
+  // Re-fire welcome immediately after reset (no page refresh needed)
+  useEffect(() => {
+    if (resetKey === 0) return;
+    shown.current = new Set<string>();
+    const w = AIRA_THRESHOLDS[0];
+    addShown(w.key);
+    setMsg({ text: w.text, level: w.level });
+    setModal(true);
+  }, [resetKey]);
+
   useEffect(() => {
     for (const t of AIRA_THRESHOLDS.slice(1)) {
       if (frequency <= t.maxFreq && !shown.current.has(t.key)) {
-        shown.current.add(t.key);
+        addShown(t.key);
         setMsg({ text: t.text, level: t.level });
         setModal(true);
         break;
