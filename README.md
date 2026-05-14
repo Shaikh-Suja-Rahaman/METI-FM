@@ -1,4 +1,4 @@
-# METI FM
+# METI FM 📻📡
 
 Receiver warmed.
 Signal lock is stable.
@@ -24,6 +24,36 @@ METI FM is a speculative engineering system that maps fictional consciousness si
 
 As frequencies decrease, the UI degrades to reflect signal quality, not mood. Translation instability increases because the model is forced to align nonhuman patterns with human syntax. ARIA, the onboard guide AI, monitors system integrity and becomes more concerned as the user descends. Unknown entities remain hidden until first contact, at which point they are indexed and exposed to the interface. The lowest bands are treated as older consciousness signatures, not as moral categories.
 
+## How METI FM Works
+
+A brief technical orientation before you begin.
+
+### What you're tuning
+
+Every conscious mind, regardless of biology, origin, or physical form, generates electromagnetic activity. Your own brain produces it right now. Neurons firing. Patterns forming. That activity has a frequency signature unique to your species.
+
+METI FM does not send messages. It does not translate language. It tunes to the resonant cognitive frequency of other conscious species and decodes the interference pattern your signal creates when it touches theirs.
+
+Think of it like this: you are not calling them. You are tapping on the glass of their reality. What comes back is their reaction to the disturbance, raw cognitive signal run through METI FM's translation layer and rendered into the closest human language equivalent.
+
+Most of them do not know you're there. They're just reacting to something.
+
+### Why the translation is imperfect
+
+The translation layer is lossy by design. What comes through is the shape of a mind, not its words. A species that communicates through shared feeling will sound like poetry. A young species that learned about humans through intercepted broadcasts will get idioms slightly wrong.
+
+This is not a bug. It's what alien contact actually sounds like.
+
+### The frequency scale
+
+Human technology operates between roughly 1 Hz and 10^20 Hz, the full range from brain waves to gamma radiation. Beyond that, physics as we understand it stops working. METI FM operates beyond that range.
+
+The safe contact band sits between 10^24 and 10^28 Hz, far outside human technological reach, accessible only through METI FM's quantum-tunneled signal bridge. The species here are young, relatively small, and their cognitive signals are clean enough to translate safely.
+
+As you tune lower, toward the Planck frequency at 1.855 x 10^43 Hz, wavelengths get longer. Signals get older. The consciousnesses you're reaching have been broadcasting since before your solar system existed.
+
+The translation layer starts breaking down below the warning threshold. What you receive becomes increasingly raw. Increasingly direct. The interface reflects this. It was not designed to handle these frequencies. Neither, frankly, were you.
+
 ## Features
 
 - Frequency-dial interface instead of character selection
@@ -33,6 +63,20 @@ As frequencies decrease, the UI degrades to reflect signal quality, not mood. Tr
 - Hidden entities revealed after first contact
 - Conversation history stored locally, no account required
 - Optional custom NVIDIA API key support
+
+## Backend Architecture
+
+The backend is intentionally thin. It is a set of entity-specific routes backed by system prompts and a single model call to NVIDIA NIM. There is no database and no session state. Each request is self-contained.
+
+Request flow:
+
+1. The frontend sends a POST request to `/api/chat/<entity>` with `{ contents: Message[] }`.
+2. The matching controller loads the entity's system prompt from `backend/prompts` and trims the conversation to the last 10 messages.
+3. It builds an OpenAI-compatible `messages` array with the system prompt plus recent user/assistant messages.
+4. The controller calls NVIDIA NIM (`meta/llama-3.1-70b-instruct`) via the OpenAI SDK, using `NVIDIA_API_KEY` or an optional `x-nvidia-api-key` header.
+5. The response text is returned directly to the client.
+
+This keeps the backend deterministic and easy to audit: prompts live in version control, requests are stateless, and the model call is the only external dependency.
 
 ## Entities
 
