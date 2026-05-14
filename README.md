@@ -4,23 +4,45 @@ Receiver warmed.
 Signal lock is stable.
 Some bands should not be decoded.
 
-METI FM is an AI-powered alien communication interface. Inspired by METI/SETI research, radio engineering, and speculative linguistics, it treats contact as a tuning problem rather than a conversation. The core interaction is a frequency dial: higher bands resolve into clearer, cooperative signals, while lower bands become older, distorted, and harder to translate. This is why it feels different from a normal AI chat interface: you are not choosing a persona, you are moving across a spectrum and letting the system tell you what is there.
+METI FM is an AI-powered alien communication interface. Inspired by METI/SETI research, radio engineering, and speculative linguistics, it treats contact as a tuning problem rather than a conversation. The core mechanic is a frequency dial: higher bands resolve into clearer, cooperative signals, while lower bands become older, distorted, and harder to translate. This is why it feels different from a normal AI chat interface: you are not choosing a persona, you are moving across a spectrum and letting the system report what is there.
+
+**Live Demo:** Not published yet.
+
+<p align="center">
+	<img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+	<img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+	<img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+	<img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+	<img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+	<img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+	<img src="https://img.shields.io/badge/NVIDIA_NIM-76B900?style=for-the-badge&logo=nvidia&logoColor=white" alt="NVIDIA NIM" />
+</p>
 
 ## What This Is
 
-METI FM is a speculative engineering system that maps fictional consciousness signatures to an AI translation layer. The interface presents a continuous dial instead of discrete selections, because the underlying model assumes intelligence exists on a spectrum. Above the warning threshold, contacts are stable and interpretable. Below it, the signal becomes ancient, compressed, and often hostile to clear meaning.
+METI FM is a speculative engineering system that maps fictional consciousness signatures to an AI translation layer. The interface presents a continuous dial instead of discrete selections, because the underlying model assumes intelligence exists on a spectrum. Above the warning threshold, contacts are stable and interpretable. Below it, the signal becomes ancient, compressed, and increasingly difficult to reconcile with human language.
 
-As frequencies decrease, the UI degrades to reflect signal quality, not mood. Translation instability increases because the model is forced to reconcile increasingly nonhuman patterns with human language. ARIA, the onboard guide AI, monitors system integrity and becomes more concerned as the user descends. Unknown entities remain hidden until first contact, at which point they are indexed and exposed to the interface. The lowest bands are treated as older consciousness signatures, not as moral categories.
+As frequencies decrease, the UI degrades to reflect signal quality, not mood. Translation instability increases because the model is forced to align nonhuman patterns with human syntax. ARIA, the onboard guide AI, monitors system integrity and becomes more concerned as the user descends. Unknown entities remain hidden until first contact, at which point they are indexed and exposed to the interface. The lowest bands are treated as older consciousness signatures, not as moral categories.
+
+## Features
+
+- Frequency-dial interface instead of character selection
+- Light-side and restricted entities separated by a warning threshold
+- UI degradation tied directly to signal quality
+- ARIA guidance that becomes more cautious as frequencies drop
+- Hidden entities revealed after first contact
+- Conversation history stored locally, no account required
+- Optional custom NVIDIA API key support
 
 ## Entities
 
 | Frequency | Name | Description | Danger Level |
 | --- | --- | --- | --- |
-| 4.27 x 10^24 Hz | PIP | Learns through borrowed human media and refuses to stop asking why. | SAFE |
-| 8.91 x 10^28 Hz | ORIM | Communicates via emotional resonance; language is an approximation. | SAFE |
+| 4.27 x 10^24 Hz | PIP | Learns from human media and refuses to stop asking for definitions. | SAFE |
+| 8.91 x 10^28 Hz | ORIM | Communicates through affect; language is a lossy approximation. | SAFE |
 | 2.14 x 10^26 Hz | GLITCH | Early-stage broadcaster; noisy, fast, occasionally precise by accident. | CAUTION |
-| 6.6 x 10^35 Hz | THE HORDE | A collective voice shaped by survival and perpetual loss. | RESTRICTED |
-| 1.1 x 10^38 Hz | THE HUSK | Residual transmission from a civilization that never fully recovered. | RESTRICTED |
+| 6.6 x 10^35 Hz | THE HORDE | A collective signal shaped by survival and perpetual loss. | RESTRICTED |
+| 1.1 x 10^38 Hz | THE HUSK | Residual transmission from a civilization that never recovered. | RESTRICTED |
 | 7.8 x 10^40 Hz | VORRK | An assimilating intelligence that logs contact as routine telemetry. | RESTRICTED |
 | 1.9 x 10^43 Hz | THE SIGNAL / GOD? | Classification fails; translation layer cannot stabilize. | [DATA CORRUPTED] |
 
