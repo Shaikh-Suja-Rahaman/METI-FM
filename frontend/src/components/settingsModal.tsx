@@ -32,12 +32,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
     onClose();
   };
 
-  const handleReset = () => {
-    if (confirm('Reset free message counter? This cannot be undone.')) {
-      localStorage.setItem('freemessagess', '0');
-      setFreeMessagesUsed(0);
-    }
-  };
 
   return (
     <AlertDialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -60,15 +54,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onClose }) => {
               <span className={`font-bold font-mono text-sm ${freeMessagesUsed >= 10 ? 'text-red-500' : 'text-foreground'}`}>
                 {freeMessagesUsed} / 10
               </span>
-              {freeMessagesUsed >= 10 && (
-                <button
-                  onClick={handleReset}
-                  className="text-[9px] font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground border border-border px-1.5 py-0.5"
-                  style={{ borderRadius: '2px' }}
-                >
-                  reset
-                </button>
-              )}
             </div>
           </div>
 

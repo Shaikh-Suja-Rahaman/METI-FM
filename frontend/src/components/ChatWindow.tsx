@@ -199,7 +199,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         {/* Lock banner */}
         {isLocked && (
           <div className="mb-2 px-3 py-1.5 border border-black bg-gray-950/30 text-white text-[10px] font-mono uppercase tracking-wider text-center" style={{ borderRadius: '2px' }}>
-            Retune dial to {convEntity?.name} ({frequencyMhz.toFixed(1)} MHz) to transmit
+            Retune dial to "{convEntity?.name}" to transmit
           </div>
         )}
 
