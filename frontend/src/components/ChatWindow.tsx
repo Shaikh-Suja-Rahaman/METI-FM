@@ -81,7 +81,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       const headers: Record<string, string> = {};
       if (customKey) headers['x-nvidia-api-key'] = customKey;
       const res = await axios.post(
-        `http://localhost:5001/api/chat/${entity.route}`,
+        `https://meti-fm.onrender.com${entity.route}`,
         { contents: [...(messages || []), userMsg] },
         { headers }
       );

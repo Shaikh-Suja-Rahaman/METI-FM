@@ -80,7 +80,7 @@ const FullChat = ({ persona, messages, setMessages, onOpenSettings }: FullChatPr
       if (customKey) headers['x-nvidia-api-key'] = customKey;
 
       const response = await axios.post(
-        `http://localhost:5001/api/chat/${persona}`,
+        `https://meti-fm.onrender.com{persona}`,
         payload,
         { headers }
       );
