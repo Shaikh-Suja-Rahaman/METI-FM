@@ -32,6 +32,8 @@ const SignalMessage: React.FC<{ text: string }> = ({ text }) => (
   </span>
 );
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://meti-fm.onrender.com';
+
 const ChatWindow: React.FC<ChatWindowProps> = ({
   entityId, frequencyMhz, messages, setMessages,
   frequencyLevel, currentFrequency, onReTune, onOpenSettings,
@@ -81,7 +83,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       const headers: Record<string, string> = {};
       if (customKey) headers['x-nvidia-api-key'] = customKey;
       const res = await axios.post(
-        `https://meti-fm.onrender.com${entity.route}`,
+        `${API_BASE_URL}/api/chat/${entity.route}`,
         { contents: [...(messages || []), userMsg] },
         { headers }
       );

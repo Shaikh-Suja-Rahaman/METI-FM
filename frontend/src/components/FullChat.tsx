@@ -31,6 +31,8 @@ const personaHeaderColors: Record<string, string> = {
   harshCoach: "bg-vibeCoral text-vibeCoral-foreground",
 };
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://meti-fm.onrender.com';
+
 const FullChat = ({ persona, messages, setMessages, onOpenSettings }: FullChatProps) => {
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
@@ -80,7 +82,7 @@ const FullChat = ({ persona, messages, setMessages, onOpenSettings }: FullChatPr
       if (customKey) headers['x-nvidia-api-key'] = customKey;
 
       const response = await axios.post(
-        `https://meti-fm.onrender.com{persona}`,
+        `${API_BASE_URL}/api/chat/${persona}`,
         payload,
         { headers }
       );
