@@ -6,7 +6,7 @@ Some bands should not be decoded.
 
 METI FM is an AI-powered alien communication interface. Inspired by METI/SETI research, radio engineering, and speculative linguistics, it treats contact as a tuning problem rather than a conversation. The core mechanic is a frequency dial: higher bands resolve into clearer, cooperative signals, while lower bands become older, distorted, and harder to translate. This is why it feels different from a normal AI chat interface: you are not choosing a persona, you are moving across a spectrum and letting the system report what is there.
 
-**Live Demo:** Not published yet.
+**Live Demo:** https://meti-fm.vercel.app/
 
 <p align="center">
 	<img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
